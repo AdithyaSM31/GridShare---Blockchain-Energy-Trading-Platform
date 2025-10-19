@@ -23,13 +23,20 @@ async function connectDB() {
   }
 }
 
-function getBody(req) {
-  if (req.body) return req.body;
-  try {
-    return JSON.parse(req.rawBody || '{}');
-  } catch {
-    return {};
+async function getBody(req) {
+  if (req.body && typeof req.body === 'object') {
+    return req.body;
   }
+  
+  if (typeof req.body === 'string') {
+    try {
+      return JSON.parse(req.body);
+    } catch (e) {
+      return {};
+    }
+  }
+  
+  return {};
 }
 
 export default async function handler(req, res) {
@@ -50,7 +57,10 @@ export default async function handler(req, res) {
   try {
     await connectDB();
 
-    const { email, password } = getBody(req);
+    const body = await getBody(req);
+    const { email, password } = body;
+
+    console.log('Login request:', { email, hasPassword: !!password });
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Missing email or password' });

@@ -23,13 +23,22 @@ async function connectDB() {
   }
 }
 
-function getBody(req) {
-  if (req.body) return req.body;
-  try {
-    return JSON.parse(req.rawBody || '{}');
-  } catch {
-    return {};
+async function getBody(req) {
+  if (req.body && typeof req.body === 'object') {
+    return req.body;
   }
+  
+  // Handle string body
+  if (typeof req.body === 'string') {
+    try {
+      return JSON.parse(req.body);
+    } catch (e) {
+      return {};
+    }
+  }
+  
+  // Handle buffer or stream (shouldn't happen in Vercel but just in case)
+  return {};
 }
 
 export default async function handler(req, res) {
@@ -50,7 +59,10 @@ export default async function handler(req, res) {
   try {
     await connectDB();
 
-    const { name, email, password, role, walletAddress, energyPreferences, location } = getBody(req);
+    const body = await getBody(req);
+    const { name, email, password, role, walletAddress, energyPreferences, location } = body;
+
+    console.log('Register request body:', { name, email, hasPassword: !!password, role });
 
     // Validate input
     if (!email || !password || !name) {
