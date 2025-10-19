@@ -42,6 +42,21 @@ export const Analytics: React.FC = () => {
     );
   }
 
+  // Check if data exists
+  if (!energyData || energyData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Analytics Data</h3>
+          <p className="text-gray-500 dark:text-gray-400">
+            Analytics will appear here once you have energy data.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Filter data based on time range
   const getFilteredData = (days: number) => {
     const cutoff = subDays(new Date(), days);

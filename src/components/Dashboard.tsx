@@ -30,6 +30,21 @@ export const Dashboard: React.FC = () => {
     );
   }
 
+  // Safely check if data exists
+  if (!energyData || energyData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <Zap className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Data Available</h3>
+          <p className="text-gray-500 dark:text-gray-400">
+            Energy data will appear here once you start trading or monitoring energy.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Calculate statistics
   const currentEnergy = energyData[energyData.length - 1];
   const dailyProduction = energyData.slice(-24).reduce((sum, d) => sum + d.production, 0);

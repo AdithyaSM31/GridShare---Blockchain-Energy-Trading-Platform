@@ -13,23 +13,28 @@ export const useEnergyData = (userId: string) => {
       try {
         setLoading(true);
         
-        // Try to fetch from API
-        try {
-          const data = await api.get('/energy-data?days=7');
-          if (data && data.length > 0) {
-            const formattedData = data.map((d: any) => ({
-              ...d,
-              userId: d.userId,
-              timestamp: new Date(d.timestamp),
-            }));
-            setEnergyData(formattedData);
-          } else {
-            // If no data, generate mock data
+        // Try to fetch from API if user is logged in
+        if (userId) {
+          try {
+            const data = await api.get('/energy/energy-data?days=7');
+            if (data && data.length > 0) {
+              const formattedData = data.map((d: any) => ({
+                ...d,
+                userId: d.userId,
+                timestamp: new Date(d.timestamp),
+              }));
+              setEnergyData(formattedData);
+            } else {
+              // If no data, generate mock data
+              setEnergyData(generateEnergyData());
+            }
+          } catch (error) {
+            // If API fails, generate mock data
+            console.log('Using mock energy data:', error);
             setEnergyData(generateEnergyData());
           }
-        } catch (error) {
-          // If API fails, generate mock data
-          console.log('Using mock energy data');
+        } else {
+          // No userId, use mock data
           setEnergyData(generateEnergyData());
         }
 
@@ -37,14 +42,15 @@ export const useEnergyData = (userId: string) => {
         setPriceData(generatePriceData());
       } catch (error) {
         console.error('Error fetching energy data:', error);
+        // Ensure we always have some data
+        setEnergyData(generateEnergyData());
+        setPriceData(generatePriceData());
       } finally {
         setLoading(false);
       }
     };
 
-    if (userId) {
-      fetchEnergyData();
-    }
+    fetchEnergyData();
   }, [userId]);
 
   // Generate mock energy data
