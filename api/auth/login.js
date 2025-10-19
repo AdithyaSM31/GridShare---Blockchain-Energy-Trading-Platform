@@ -3,20 +3,29 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../../server/models/User.js';
 
-// MongoDB connection
-let isConnected = false;
+// MongoDB connection with proper waiting
+let cachedConnection = null;
 
 async function connectDB() {
-  if (isConnected && mongoose.connection.readyState === 1) {
-    return;
+  if (cachedConnection && mongoose.connection.readyState === 1) {
+    return cachedConnection;
   }
 
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
-    });
-    isConnected = true;
+    // Close any stale connections
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.disconnect();
+    }
+
+    const opts = {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      bufferCommands: false,
+    };
+
+    cachedConnection = await mongoose.connect(process.env.MONGODB_URI, opts);
     console.log('✅ MongoDB connected');
+    return cachedConnection;
   } catch (err) {
     console.error('❌ MongoDB error:', err);
     throw err;
