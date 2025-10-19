@@ -42,6 +42,11 @@ export const useEnergyTrading = () => {
                 ...t,
                 id: t._id,
                 timestamp: new Date(t.timestamp),
+                totalAmount: t.totalPrice || t.totalAmount || 0, // Map totalPrice to totalAmount
+                buyerName: t.buyerName || 'Unknown',
+                sellerName: t.sellerName || 'Unknown',
+                transactionHash: t.transactionHash || '',
+                blockNumber: t.blockNumber || 0,
               }));
               setTransactions(formattedTransactions);
             }

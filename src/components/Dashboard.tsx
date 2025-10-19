@@ -279,7 +279,7 @@ export const Dashboard: React.FC = () => {
                     </div>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">
-                        {transaction.energyAmount} kWh from {transaction.sellerName}
+                        {transaction.energyAmount || 0} kWh from {transaction.sellerName || 'Unknown'}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
                         {format(transaction.timestamp, 'MMM dd, yyyy HH:mm')}
@@ -287,7 +287,9 @@ export const Dashboard: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900 dark:text-white">${transaction.totalAmount.toFixed(2)}</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      ${(transaction.totalAmount || 0).toFixed(2)}
+                    </p>
                     <p className={`text-sm capitalize ${
                       transaction.status === 'confirmed' ? 'text-green-600 dark:text-green-400' :
                       transaction.status === 'pending' ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
