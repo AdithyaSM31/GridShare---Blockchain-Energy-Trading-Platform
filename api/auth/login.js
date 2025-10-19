@@ -23,6 +23,15 @@ async function connectDB() {
   }
 }
 
+function getBody(req) {
+  if (req.body) return req.body;
+  try {
+    return JSON.parse(req.rawBody || '{}');
+  } catch {
+    return {};
+  }
+}
+
 export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,7 +50,7 @@ export default async function handler(req, res) {
   try {
     await connectDB();
 
-    const { email, password } = req.body;
+    const { email, password } = getBody(req);
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Missing email or password' });
