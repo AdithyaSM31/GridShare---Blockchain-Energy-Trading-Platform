@@ -169,8 +169,8 @@ export const Analytics: React.FC = () => {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between"
       >
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Energy Analytics</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Energy Analytics</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
             Detailed insights into your energy production and trading patterns
           </p>
         </div>
@@ -178,13 +178,13 @@ export const Analytics: React.FC = () => {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value as 'week' | 'month' | '3months')}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             <option value="week">Last Week</option>
             <option value="month">Last Month</option>
             <option value="3months">Last 3 Months</option>
           </select>
-          <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center">
+          <button className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center text-gray-900 dark:text-white">
             <Download className="w-4 h-4 mr-2" />
             Export
           </button>
@@ -199,23 +199,23 @@ export const Analytics: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">{metric.title}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">{metric.value}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{metric.title}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{metric.value}</p>
                 <div className="flex items-center mt-2">
                   <span className={`text-sm font-medium ${
-                    metric.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
+                    metric.changeType === 'positive' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                   }`}>
                     {metric.change}
                   </span>
-                  <span className="text-sm text-gray-500 ml-2">vs last period</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">vs last period</span>
                 </div>
               </div>
-              <div className={`p-3 rounded-lg ${metric.bgColor}`}>
-                <metric.icon className={`w-6 h-6 ${metric.color}`} />
+              <div className={`p-3 rounded-lg ${metric.bgColor} dark:bg-opacity-20`}>
+                <metric.icon className={`w-6 h-6 ${metric.color} dark:opacity-90`} />
               </div>
             </div>
           </motion.div>
@@ -229,9 +229,9 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Daily Energy Flow
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -252,9 +252,9 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Monthly Financial Overview
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -291,9 +291,9 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+          className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Energy Source Distribution
           </h3>
           {sourceDistribution.length > 0 ? (
@@ -315,7 +315,7 @@ export const Analytics: React.FC = () => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-64 text-gray-500">
+            <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400">
               <p>No trading data available</p>
             </div>
           )}
@@ -326,9 +326,9 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+          className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Trading Summary
           </h3>
           <div className="grid grid-cols-2 gap-4">
