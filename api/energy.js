@@ -65,7 +65,7 @@ const Listing = mongoose.models.Listing || mongoose.model('Listing', ListingSche
 const Transaction = mongoose.models.Transaction || mongoose.model('Transaction', TransactionSchema);
 const EnergyData = mongoose.models.EnergyData || mongoose.model('EnergyData', EnergyDataSchema);
 
-// Verify JWT token
+// Verify JWT token and extract user info
 function verifyToken(req) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -74,7 +74,14 @@ function verifyToken(req) {
 
   const token = authHeader.substring(7);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  return decoded;
+  
+  // The JWT payload structure is { user: { id, email, role } }
+  // Return the user object with normalized field names
+  return {
+    userId: decoded.user.id,
+    email: decoded.user.email,
+    role: decoded.user.role
+  };
 }
 
 export default async function handler(req, res) {
@@ -105,17 +112,31 @@ export default async function handler(req, res) {
 
     // POST /listings - Create a new listing (requires auth)
     if (path === '/listings' && req.method === 'POST') {
-      const user = verifyToken(req);
+      const userAuth = verifyToken(req);
+      
+      // Import User model to get user details
+      const UserModel = mongoose.models.User || mongoose.model('User', new mongoose.Schema({
+        name: String,
+        email: String,
+        location: { address: String }
+      }));
+      
+      const userDoc = await UserModel.findById(userAuth.userId);
+      if (!userDoc) {
+        return res.status(404).json({ message: 'User not found' });
+      }
       
       const { energyAmount, pricePerKwh, energySource, availableFrom, availableUntil, location } = req.body;
       
+      console.log('Creating listing with userId:', userAuth.userId);
+      
       const listing = await Listing.create({
-        userId: user.userId,
-        prosumerName: user.name || 'Anonymous',
+        userId: userAuth.userId,
+        prosumerName: userDoc.name || userAuth.email || 'Anonymous',
         energyAmount,
         pricePerKwh,
         energySource,
-        location: location || user.location || 'Unknown',
+        location: location || userDoc.location?.address || 'Unknown',
         availableFrom: availableFrom || new Date(),
         availableUntil: new Date(availableUntil),
         status: 'available',
