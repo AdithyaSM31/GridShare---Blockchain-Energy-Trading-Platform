@@ -16,28 +16,46 @@ export const useEnergyTrading = () => {
         setLoading(true);
         
         // Fetch listings
-        const listingsData = await api.get('/energy/listings');
-        const formattedListings = listingsData.map((l: any) => ({
-          ...l,
-          id: l._id,
-          createdAt: new Date(l.createdAt),
-          availableFrom: new Date(l.availableFrom),
-          availableUntil: new Date(l.availableUntil),
-        }));
-        setListings(formattedListings);
+        try {
+          const listingsData = await api.get('/energy/listings');
+          if (Array.isArray(listingsData)) {
+            const formattedListings = listingsData.map((l: any) => ({
+              ...l,
+              id: l._id,
+              createdAt: new Date(l.createdAt),
+              availableFrom: new Date(l.availableFrom),
+              availableUntil: new Date(l.availableUntil),
+            }));
+            setListings(formattedListings);
+          }
+        } catch (error) {
+          console.error('Failed to fetch listings:', error);
+          setListings([]);
+        }
 
         // Fetch transactions if user is logged in
         if (user) {
-          const transactionsData = await api.get('/energy/transactions');
-          const formattedTransactions = transactionsData.map((t: any) => ({
-            ...t,
-            id: t._id,
-            timestamp: new Date(t.timestamp),
-          }));
-          setTransactions(formattedTransactions);
+          try {
+            const transactionsData = await api.get('/energy/transactions');
+            if (Array.isArray(transactionsData)) {
+              const formattedTransactions = transactionsData.map((t: any) => ({
+                ...t,
+                id: t._id,
+                timestamp: new Date(t.timestamp),
+              }));
+              setTransactions(formattedTransactions);
+            }
+          } catch (error) {
+            console.error('Failed to fetch transactions:', error);
+            setTransactions([]);
+          }
+        } else {
+          setTransactions([]);
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
+        setListings([]);
+        setTransactions([]);
       } finally {
         setLoading(false);
       }

@@ -49,8 +49,8 @@ export const Dashboard: React.FC = () => {
   const currentEnergy = energyData[energyData.length - 1];
   const dailyProduction = energyData.slice(-24).reduce((sum, d) => sum + d.production, 0);
   const dailyConsumption = energyData.slice(-24).reduce((sum, d) => sum + d.consumption, 0);
-  const dailySavings = priceData[priceData.length - 1]?.savings || 0;
-  const monthlyTransactions = transactions.filter(t => 
+  const dailySavings = priceData && priceData.length > 0 ? (priceData[priceData.length - 1]?.savings || 0) : 0;
+  const monthlyTransactions = (transactions || []).filter(t => 
     t.timestamp > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
   ).length;
 
@@ -101,7 +101,7 @@ export const Dashboard: React.FC = () => {
     net: data.production - data.consumption,
   }));
 
-  const priceComparisonData = priceData.slice(-7).map(data => ({
+  const priceComparisonData = (priceData || []).slice(-7).map(data => ({
     date: format(data.timestamp, 'MMM dd'),
     p2p: data.p2pPrice,
     grid: data.gridPrice,

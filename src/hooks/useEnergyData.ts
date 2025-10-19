@@ -54,7 +54,7 @@ export const useEnergyData = (userId: string) => {
   }, [userId]);
 
   // Generate mock energy data
-  const generateEnergyData = (): EnergyData[] => {
+  const generateEnergyData = (uid: string = userId || 'mock-user'): EnergyData[] => {
     const data: EnergyData[] = [];
     const now = new Date();
     
@@ -74,7 +74,7 @@ export const useEnergyData = (userId: string) => {
       const gridExport = Math.max(0, production - consumption);
       
       data.push({
-        userId,
+        userId: uid,
         timestamp,
         production: Math.round(production * 100) / 100,
         consumption: Math.round(consumption * 100) / 100,
