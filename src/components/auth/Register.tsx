@@ -36,8 +36,14 @@ export const Register: React.FC = () => {
       return;
     }
 
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const success = await register({
+      await register({
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -54,13 +60,12 @@ export const Register: React.FC = () => {
         },
       });
       
-      if (success) {
-        navigate('/dashboard');
-      } else {
-        setError('Registration failed. User may already exist.');
-      }
-    } catch (err) {
-      setError('Registration failed. Please try again.');
+      navigate('/dashboard');
+    } catch (err: any) {
+      // Display the actual error message from the API
+      const errorMessage = err?.message || 'Registration failed. Please try again.';
+      setError(errorMessage);
+      console.error('Registration error:', err);
     } finally {
       setLoading(false);
     }

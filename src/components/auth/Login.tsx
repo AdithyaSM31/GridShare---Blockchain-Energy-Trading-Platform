@@ -22,14 +22,13 @@ export const Login: React.FC = () => {
     setError('');
 
     try {
-      const success = await login(email, password);
-      if (success) {
-        navigate('/dashboard');
-      } else {
-        setError('Invalid email or password');
-      }
-    } catch (err) {
-      setError('Login failed. Please try again.');
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (err: any) {
+      // Display the actual error message from the API
+      const errorMessage = err?.message || 'Login failed. Please try again.';
+      setError(errorMessage);
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }

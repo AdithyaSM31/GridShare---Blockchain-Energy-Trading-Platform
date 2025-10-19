@@ -66,7 +66,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      // Re-throw the error so the component can display the actual message
+      throw error;
     }
   };
 
@@ -84,7 +85,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Register error:', error);
-      return false;
+      // Re-throw the error so the component can display the actual message
+      throw error;
     }
   };
 
