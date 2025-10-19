@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import User from '../../server/models/User.js';
+import User from '../models/User.js';
 
 // MongoDB connection with proper waiting
 let cachedConnection = null;
