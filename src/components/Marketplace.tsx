@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useEnergyTrading } from '../hooks/useEnergyTrading';
 import { useAuth } from '../contexts/AuthContext';
+import { EnergyListing } from '../types';
 import { 
   Search, 
   Filter, 
@@ -247,6 +248,140 @@ export const Marketplace: React.FC = () => {
         </motion.div>
       )}
 
+      {/* Create Listing Modal */}
+      <AnimatePresence>
+        {showCreateListing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            onClick={() => setShowCreateListing(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold dark:text-white">Create Energy Listing</h3>
+                <button
+                  onClick={() => setShowCreateListing(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                try {
+                  await createListing({
+                    energyAmount: parseFloat(formData.get('energyAmount') as string),
+                    pricePerKwh: parseFloat(formData.get('pricePerKwh') as string),
+                    energySource: formData.get('energySource') as EnergyListing['energySource'],
+                    availableUntil: new Date(formData.get('availableUntil') as string),
+                    location: (formData.get('location') as string) || user?.location?.address || 'Unknown',
+                  });
+                  setShowCreateListing(false);
+                  // Show success message
+                } catch (error: any) {
+                  alert(error?.message || 'Failed to create listing');
+                }
+              }} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Energy Amount (kWh)
+                  </label>
+                  <input
+                    type="number"
+                    name="energyAmount"
+                    min="0.1"
+                    step="0.1"
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Price per kWh ($)
+                  </label>
+                  <input
+                    type="number"
+                    name="pricePerKwh"
+                    min="0.001"
+                    step="0.001"
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Energy Source
+                  </label>
+                  <select
+                    name="energySource"
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="solar">Solar</option>
+                    <option value="wind">Wind</option>
+                    <option value="hydro">Hydro</option>
+                    <option value="mixed">Mixed</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Available Until
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="availableUntil"
+                    required
+                    min={new Date().toISOString().slice(0, 16)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Location (optional)
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    placeholder={user?.location?.address || 'Enter location'}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                
+                <div className="flex space-x-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateListing(false)}
+                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    Create Listing
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Purchase Modal */}
       <AnimatePresence>
         {selectedListing && (
@@ -262,7 +397,7 @@ export const Marketplace: React.FC = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={e => e.stopPropagation()}
-              className="bg-white rounded-xl p-6 w-full max-w-md"
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-md"
             >
               {(() => {
                 const listing = listings.find(l => l.id === selectedListing);
@@ -271,33 +406,33 @@ export const Marketplace: React.FC = () => {
                 return (
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold">Purchase Energy</h3>
+                      <h3 className="text-lg font-semibold dark:text-white">Purchase Energy</h3>
                       <button
                         onClick={() => setSelectedListing(null)}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                       >
                         <X className="w-5 h-5" />
                       </button>
                     </div>
                     
                     <div className="space-y-4">
-                      <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium">From:</span>
-                          <span>{listing.prosumerName}</span>
+                          <span className="font-medium dark:text-gray-300">From:</span>
+                          <span className="dark:text-white">{listing.prosumerName}</span>
                         </div>
                         <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium">Available:</span>
-                          <span>{listing.energyAmount} kWh</span>
+                          <span className="font-medium dark:text-gray-300">Available:</span>
+                          <span className="dark:text-white">{listing.energyAmount} kWh</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">Price:</span>
-                          <span>${listing.pricePerKwh.toFixed(3)}/kWh</span>
+                          <span className="font-medium dark:text-gray-300">Price:</span>
+                          <span className="dark:text-white">${listing.pricePerKwh.toFixed(3)}/kWh</span>
                         </div>
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Amount to purchase (kWh)
                         </label>
                         <input
@@ -307,14 +442,14 @@ export const Marketplace: React.FC = () => {
                           step="0.1"
                           value={purchaseAmount}
                           onChange={(e) => setPurchaseAmount(parseFloat(e.target.value))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                         />
                       </div>
                       
-                      <div className="bg-blue-50 rounded-lg p-4">
+                      <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
                         <div className="flex justify-between items-center text-lg font-semibold">
-                          <span>Total:</span>
-                          <span className="text-blue-600">
+                          <span className="dark:text-gray-200">Total:</span>
+                          <span className="text-blue-600 dark:text-blue-400">
                             ${(purchaseAmount * listing.pricePerKwh).toFixed(2)}
                           </span>
                         </div>
@@ -323,7 +458,7 @@ export const Marketplace: React.FC = () => {
                       <div className="flex space-x-3">
                         <button
                           onClick={() => setSelectedListing(null)}
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                         >
                           Cancel
                         </button>

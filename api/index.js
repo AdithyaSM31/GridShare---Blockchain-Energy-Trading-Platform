@@ -1,6 +1,7 @@
 import registerHandler from './auth/register.js';
 import loginHandler from './auth/login.js';
 import meHandler from './auth/me.js';
+import energyHandler from './energy.js';
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -38,12 +39,25 @@ export default async function handler(req, res) {
     return meHandler(req, res);
   }
 
+  // Route to energy endpoints
+  if (path.includes('/energy')) {
+    return energyHandler(req, res);
+  }
+
   // Health check
   if (path === '/health' || path === '/' || path === '') {
     return res.json({ 
       status: 'ok', 
       message: 'GridShare API',
-      endpoints: ['/api/auth/register', '/api/auth/login', '/api/auth/me'],
+      endpoints: [
+        '/api/auth/register', 
+        '/api/auth/login', 
+        '/api/auth/me',
+        '/api/energy/listings',
+        '/api/energy/transactions',
+        '/api/energy/purchase/:id',
+        '/api/energy/energy-data'
+      ],
       receivedPath: req.url
     });
   }
@@ -52,6 +66,11 @@ export default async function handler(req, res) {
     message: 'Endpoint not found', 
     requestedPath: req.url,
     parsedPath: path,
-    availableEndpoints: ['/api/auth/register', '/api/auth/login', '/api/auth/me']
+    availableEndpoints: [
+      '/api/auth/register', 
+      '/api/auth/login', 
+      '/api/auth/me',
+      '/api/energy/*'
+    ]
   });
 }
