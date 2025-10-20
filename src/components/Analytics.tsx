@@ -126,22 +126,62 @@ export const Analytics: React.FC = () => {
     return acc;
   }, []).slice(-6);
 
-  // Key metrics
-  const totalProduction = filteredEnergyData.reduce((sum, data) => sum + data.production, 0);
-  const totalConsumption = filteredEnergyData.reduce((sum, data) => sum + data.consumption, 0);
-  const totalSpending = transactions
+  // Key metrics with period comparison
+  const days = timeRange === 'week' ? 7 : timeRange === 'month' ? 30 : 90;
+  const currentPeriodStart = subDays(new Date(), days);
+  const previousPeriodStart = subDays(new Date(), days * 2);
+  
+  // Current period metrics
+  const currentPeriodData = energyData.filter(d => d.timestamp >= currentPeriodStart);
+  const previousPeriodData = energyData.filter(d => 
+    d.timestamp >= previousPeriodStart && d.timestamp < currentPeriodStart
+  );
+  
+  const totalProduction = currentPeriodData.reduce((sum, data) => sum + data.production, 0);
+  const totalConsumption = currentPeriodData.reduce((sum, data) => sum + data.consumption, 0);
+  const previousProduction = previousPeriodData.reduce((sum, data) => sum + data.production, 0);
+  const previousConsumption = previousPeriodData.reduce((sum, data) => sum + data.consumption, 0);
+  
+  // Financial metrics from actual transactions
+  const currentTransactions = transactions.filter(t => t.timestamp >= currentPeriodStart);
+  const previousTransactions = transactions.filter(t => 
+    t.timestamp >= previousPeriodStart && t.timestamp < currentPeriodStart
+  );
+  
+  const totalSpending = currentTransactions
     .filter(t => t.buyerId === user?.id)
     .reduce((sum, t) => sum + t.totalAmount, 0);
-  const totalEarnings = transactions
+  const totalEarnings = currentTransactions
     .filter(t => t.sellerId === user?.id)
     .reduce((sum, t) => sum + t.totalAmount, 0);
+  
+  const previousSpending = previousTransactions
+    .filter(t => t.buyerId === user?.id)
+    .reduce((sum, t) => sum + t.totalAmount, 0);
+  const previousEarnings = previousTransactions
+    .filter(t => t.sellerId === user?.id)
+    .reduce((sum, t) => sum + t.totalAmount, 0);
+  
+  // Calculate real percentage changes
+  const productionChange = previousProduction > 0 
+    ? ((totalProduction - previousProduction) / previousProduction * 100).toFixed(0)
+    : totalProduction > 0 ? '+100' : '0';
+  const consumptionChange = previousConsumption > 0
+    ? ((totalConsumption - previousConsumption) / previousConsumption * 100).toFixed(0)
+    : totalConsumption > 0 ? '+100' : '0';
+  const earningsChange = previousEarnings > 0
+    ? ((totalEarnings - previousEarnings) / previousEarnings * 100).toFixed(0)
+    : totalEarnings > 0 ? '+100' : '0';
+  const spendingChange = previousSpending > 0
+    ? ((totalSpending - previousSpending) / previousSpending * 100).toFixed(0)
+    : totalSpending > 0 ? '+100' : '0';
 
   const metrics = [
     {
       title: 'Energy Produced',
       value: `${totalProduction.toFixed(1)} kWh`,
-      change: '+12%',
-      changeType: 'positive' as const,
+      change: `${parseFloat(productionChange) >= 0 ? '+' : ''}${productionChange}%`,
+      changeType: parseFloat(productionChange) >= 0 ? 'positive' as const : 'negative' as const,
       icon: TrendingUp,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
@@ -149,8 +189,8 @@ export const Analytics: React.FC = () => {
     {
       title: 'Energy Consumed',
       value: `${totalConsumption.toFixed(1)} kWh`,
-      change: '-3%',
-      changeType: 'positive' as const,
+      change: `${parseFloat(consumptionChange) >= 0 ? '+' : ''}${consumptionChange}%`,
+      changeType: parseFloat(consumptionChange) < 0 ? 'positive' as const : 'negative' as const,
       icon: Zap,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
@@ -158,8 +198,8 @@ export const Analytics: React.FC = () => {
     {
       title: 'Total Earnings',
       value: `$${totalEarnings.toFixed(2)}`,
-      change: '+28%',
-      changeType: 'positive' as const,
+      change: `${parseFloat(earningsChange) >= 0 ? '+' : ''}${earningsChange}%`,
+      changeType: parseFloat(earningsChange) >= 0 ? 'positive' as const : 'negative' as const,
       icon: DollarSign,
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-100',
@@ -167,8 +207,8 @@ export const Analytics: React.FC = () => {
     {
       title: 'Total Spending',
       value: `$${totalSpending.toFixed(2)}`,
-      change: '-15%',
-      changeType: 'positive' as const,
+      change: `${parseFloat(spendingChange) >= 0 ? '+' : ''}${spendingChange}%`,
+      changeType: parseFloat(spendingChange) < 0 ? 'positive' as const : 'negative' as const, // Lower spending is better
       icon: DollarSign,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',

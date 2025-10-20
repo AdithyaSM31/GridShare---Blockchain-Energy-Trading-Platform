@@ -49,10 +49,49 @@ export const Dashboard: React.FC = () => {
   const currentEnergy = energyData[energyData.length - 1];
   const dailyProduction = energyData.slice(-24).reduce((sum, d) => sum + d.production, 0);
   const dailyConsumption = energyData.slice(-24).reduce((sum, d) => sum + d.consumption, 0);
-  const dailySavings = priceData && priceData.length > 0 ? (priceData[priceData.length - 1]?.savings || 0) : 0;
-  const monthlyTransactions = (transactions || []).filter(t => 
-    t.timestamp > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-  ).length;
+  
+  // Calculate previous period for comparison
+  const previousDayProduction = energyData.slice(-48, -24).reduce((sum, d) => sum + d.production, 0);
+  const previousDayConsumption = energyData.slice(-48, -24).reduce((sum, d) => sum + d.consumption, 0);
+  
+  // Calculate actual changes
+  const productionChange = previousDayProduction > 0 
+    ? ((dailyProduction - previousDayProduction) / previousDayProduction * 100).toFixed(1)
+    : '0';
+  const consumptionChange = previousDayConsumption > 0
+    ? ((dailyConsumption - previousDayConsumption) / previousDayConsumption * 100).toFixed(1)
+    : '0';
+  
+  // Calculate real savings from transactions
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+  
+  const currentMonthTransactions = (transactions || []).filter(t => t.timestamp > thirtyDaysAgo);
+  const previousMonthTransactions = (transactions || []).filter(t => 
+    t.timestamp > sixtyDaysAgo && t.timestamp <= thirtyDaysAgo
+  );
+  
+  // Calculate actual spending vs grid price
+  const currentMonthSpending = currentMonthTransactions
+    .filter(t => t.buyerId === user?.id)
+    .reduce((sum, t) => sum + t.totalAmount, 0);
+  
+  const energyBought = currentMonthTransactions
+    .filter(t => t.buyerId === user?.id)
+    .reduce((sum, t) => sum + t.energyAmount, 0);
+  
+  // Assume grid price is average 0.20 per kWh (or get from priceData)
+  const avgGridPrice = priceData && priceData.length > 0 
+    ? priceData[priceData.length - 1]?.gridPrice || 0.20
+    : 0.20;
+  
+  const gridCost = energyBought * avgGridPrice;
+  const actualSavings = gridCost > 0 ? ((gridCost - currentMonthSpending) / gridCost * 100) : 0;
+  
+  const transactionsChange = previousMonthTransactions.length > 0
+    ? ((currentMonthTransactions.length - previousMonthTransactions.length) / previousMonthTransactions.length * 100).toFixed(0)
+    : currentMonthTransactions.length > 0 ? '+100' : '0';
 
   const stats = [
     {
@@ -61,8 +100,8 @@ export const Dashboard: React.FC = () => {
       icon: Sun,
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-100',
-      change: '+12%',
-      changeType: 'positive' as const,
+      change: `${parseFloat(productionChange) >= 0 ? '+' : ''}${productionChange}%`,
+      changeType: parseFloat(productionChange) >= 0 ? 'positive' as const : 'negative' as const,
     },
     {
       name: 'Daily Consumption',
@@ -70,26 +109,26 @@ export const Dashboard: React.FC = () => {
       icon: Zap,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
-      change: '-3%',
-      changeType: 'positive' as const,
+      change: `${parseFloat(consumptionChange) >= 0 ? '+' : ''}${consumptionChange}%`,
+      changeType: parseFloat(consumptionChange) < 0 ? 'positive' as const : 'negative' as const, // Lower consumption is better
     },
     {
       name: 'Monthly Savings',
-      value: `${dailySavings.toFixed(1)}%`,
+      value: `${actualSavings.toFixed(1)}%`,
       icon: DollarSign,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
-      change: '+8%',
+      change: energyBought > 0 ? `$${(gridCost - currentMonthSpending).toFixed(2)} saved` : 'No purchases',
       changeType: 'positive' as const,
     },
     {
       name: 'Transactions',
-      value: monthlyTransactions.toString(),
+      value: currentMonthTransactions.length.toString(),
       icon: TrendingUp,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
-      change: '+15%',
-      changeType: 'positive' as const,
+      change: `${transactionsChange}%`,
+      changeType: parseFloat(transactionsChange) >= 0 ? 'positive' as const : 'negative' as const,
     },
   ];
 
