@@ -22,15 +22,14 @@ import {
   DollarSign, 
   Zap, 
   Calendar,
-  Download,
-  Filter
+  Download
 } from 'lucide-react';
-import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { motion } from 'framer-motion';
 
 export const Analytics: React.FC = () => {
   const { user } = useAuth();
-  const { energyData, priceData, loading } = useEnergyData(user?.id || '');
+  const { energyData, loading } = useEnergyData(user?.id || '');
   const { transactions } = useEnergyTrading();
   const [timeRange, setTimeRange] = useState<'week' | 'month' | '3months'>('month');
 
@@ -47,10 +46,13 @@ export const Analytics: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <TrendingUp className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Analytics Data</h3>
-          <p className="text-gray-500 dark:text-gray-400">
-            Analytics will appear here once you have energy data.
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
+            Analytics will appear here once you have energy trading activity.
+          </p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">
+            📊 Start by creating listings or purchasing energy in the Marketplace
           </p>
         </div>
       </div>
@@ -73,15 +75,15 @@ export const Analytics: React.FC = () => {
     const existing = acc.find(item => item.date === date);
     
     if (existing) {
-      existing.production += curr.production;
-      existing.consumption += curr.consumption;
+      existing.production += curr.production || 0;
+      existing.consumption += curr.consumption || 0;
     } else {
       acc.push({
         date,
         displayDate: format(curr.timestamp, 'MMM dd'),
-        production: curr.production,
-        consumption: curr.consumption,
-        net: curr.production - curr.consumption,
+        production: curr.production || 0,
+        consumption: curr.consumption || 0,
+        net: (curr.production || 0) - (curr.consumption || 0),
       });
     }
     return acc;
@@ -91,11 +93,11 @@ export const Analytics: React.FC = () => {
   const sourceDistribution = transactions.reduce((acc: any[], curr) => {
     const existing = acc.find(item => item.name === curr.energySource);
     if (existing) {
-      existing.value += curr.energyAmount;
+      existing.value += curr.energyAmount || 0;
     } else {
       acc.push({
-        name: curr.energySource,
-        value: curr.energyAmount,
+        name: curr.energySource || 'Unknown',
+        value: curr.energyAmount || 0,
         color: curr.energySource === 'solar' ? '#f59e0b' :
                curr.energySource === 'wind' ? '#3b82f6' :
                curr.energySource === 'hydro' ? '#06b6d4' : '#8b5cf6'
@@ -111,16 +113,16 @@ export const Analytics: React.FC = () => {
     
     if (existing) {
       if (curr.buyerId === user?.id) {
-        existing.spending += curr.totalAmount;
+        existing.spending += curr.totalAmount || 0;
       } else {
-        existing.earnings += curr.totalAmount;
+        existing.earnings += curr.totalAmount || 0;
       }
     } else {
       acc.push({
         month,
         displayMonth: format(curr.timestamp, 'MMM yyyy'),
-        spending: curr.buyerId === user?.id ? curr.totalAmount : 0,
-        earnings: curr.sellerId === user?.id ? curr.totalAmount : 0,
+        spending: curr.buyerId === user?.id ? (curr.totalAmount || 0) : 0,
+        earnings: curr.sellerId === user?.id ? (curr.totalAmount || 0) : 0,
       });
     }
     return acc;
@@ -137,10 +139,10 @@ export const Analytics: React.FC = () => {
     d.timestamp >= previousPeriodStart && d.timestamp < currentPeriodStart
   );
   
-  const totalProduction = currentPeriodData.reduce((sum, data) => sum + data.production, 0);
-  const totalConsumption = currentPeriodData.reduce((sum, data) => sum + data.consumption, 0);
-  const previousProduction = previousPeriodData.reduce((sum, data) => sum + data.production, 0);
-  const previousConsumption = previousPeriodData.reduce((sum, data) => sum + data.consumption, 0);
+  const totalProduction = currentPeriodData.reduce((sum, data) => sum + (data.production || 0), 0);
+  const totalConsumption = currentPeriodData.reduce((sum, data) => sum + (data.consumption || 0), 0);
+  const previousProduction = previousPeriodData.reduce((sum, data) => sum + (data.production || 0), 0);
+  const previousConsumption = previousPeriodData.reduce((sum, data) => sum + (data.consumption || 0), 0);
   
   // Financial metrics from actual transactions
   const currentTransactions = transactions.filter(t => t.timestamp >= currentPeriodStart);
@@ -150,17 +152,17 @@ export const Analytics: React.FC = () => {
   
   const totalSpending = currentTransactions
     .filter(t => t.buyerId === user?.id)
-    .reduce((sum, t) => sum + t.totalAmount, 0);
+    .reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const totalEarnings = currentTransactions
     .filter(t => t.sellerId === user?.id)
-    .reduce((sum, t) => sum + t.totalAmount, 0);
+    .reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   
   const previousSpending = previousTransactions
     .filter(t => t.buyerId === user?.id)
-    .reduce((sum, t) => sum + t.totalAmount, 0);
+    .reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   const previousEarnings = previousTransactions
     .filter(t => t.sellerId === user?.id)
-    .reduce((sum, t) => sum + t.totalAmount, 0);
+    .reduce((sum, t) => sum + (t.totalAmount || 0), 0);
   
   // Calculate real percentage changes
   const productionChange = previousProduction > 0 
@@ -360,7 +362,7 @@ export const Analytics: React.FC = () => {
                   cy="50%"
                   outerRadius={80}
                   dataKey="value"
-                  label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({name, percent}) => `${name} ${percent ? (percent * 100).toFixed(0) : '0'}%`}
                 >
                   {sourceDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -399,42 +401,42 @@ export const Analytics: React.FC = () => {
               </div>
             </div>
             
-            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-blue-600 font-medium">Avg. Price</p>
-                  <p className="text-2xl font-bold text-blue-700">
+                  <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">Avg. Price</p>
+                  <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
                     ${transactions.length > 0 
-                      ? (transactions.reduce((sum, t) => sum + t.pricePerKwh, 0) / transactions.length).toFixed(3)
+                      ? (transactions.reduce((sum, t) => sum + (t.pricePerKwh || 0), 0) / transactions.length).toFixed(3)
                       : '0.000'
                     }
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800/50 rounded-full flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-purple-600 font-medium">Energy Traded</p>
-                  <p className="text-2xl font-bold text-purple-700">
-                    {transactions.reduce((sum, t) => sum + t.energyAmount, 0).toFixed(1)} kWh
+                  <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">Energy Traded</p>
+                  <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">
+                    {transactions.reduce((sum, t) => sum + (t.energyAmount || 0), 0).toFixed(1)} kWh
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-800/50 rounded-full flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-orange-600 font-medium">Success Rate</p>
-                  <p className="text-2xl font-bold text-orange-700">
+                  <p className="text-sm text-orange-600 dark:text-orange-400 font-medium">Success Rate</p>
+                  <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">
                     {transactions.length > 0 
                       ? Math.round((transactions.filter(t => t.status === 'confirmed').length / transactions.length) * 100)
                       : 0

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { EnergyData, PriceData } from '../types';
-import { addHours, subDays } from 'date-fns';
+import { addHours, subDays, startOfDay } from 'date-fns';
 import { api } from '../utils/api';
 
 export const useEnergyData = (userId: string) => {
@@ -13,38 +13,28 @@ export const useEnergyData = (userId: string) => {
       try {
         setLoading(true);
         
-        // Try to fetch from API if user is logged in
         if (userId) {
-          try {
-            const data = await api.get('/energy/energy-data?days=7');
-            if (data && data.length > 0) {
-              const formattedData = data.map((d: any) => ({
-                ...d,
-                userId: d.userId,
-                timestamp: new Date(d.timestamp),
-              }));
-              setEnergyData(formattedData);
-            } else {
-              // If no data, generate mock data
-              setEnergyData(generateEnergyData());
-            }
-          } catch (error) {
-            // If API fails, generate mock data
-            console.log('Using mock energy data:', error);
-            setEnergyData(generateEnergyData());
-          }
+          // Fetch transactions and listings to derive energy data
+          const [transactions, listings] = await Promise.all([
+            api.get('/energy/transactions').catch(() => []),
+            api.get('/energy/listings').catch(() => [])
+          ]);
+          
+          // Calculate energy data from actual marketplace transactions
+          const derivedEnergyData = deriveEnergyDataFromTransactions(transactions, listings, userId);
+          setEnergyData(derivedEnergyData);
+          
+          // Calculate price data from actual marketplace listings
+          const derivedPriceData = derivePriceDataFromMarketplace(listings, transactions);
+          setPriceData(derivedPriceData);
         } else {
-          // No userId, use mock data
-          setEnergyData(generateEnergyData());
+          setEnergyData([]);
+          setPriceData([]);
         }
-
-        // Generate price data (mock for now)
-        setPriceData(generatePriceData());
       } catch (error) {
         console.error('Error fetching energy data:', error);
-        // Ensure we always have some data
-        setEnergyData(generateEnergyData());
-        setPriceData(generatePriceData());
+        setEnergyData([]);
+        setPriceData([]);
       } finally {
         setLoading(false);
       }
@@ -53,60 +43,135 @@ export const useEnergyData = (userId: string) => {
     fetchEnergyData();
   }, [userId]);
 
-  // Generate mock energy data
-  const generateEnergyData = (uid: string = userId || 'mock-user'): EnergyData[] => {
+  // Derive energy production/consumption from actual transactions
+  const deriveEnergyDataFromTransactions = (transactions: any[], _listings: any[], uid: string): EnergyData[] => {
     const data: EnergyData[] = [];
     const now = new Date();
     
-    for (let i = 0; i < 24 * 7; i++) { // 7 days of hourly data
+    // Create hourly buckets for the last 7 days
+    const hourlyBuckets = new Map<string, { production: number; consumption: number; count: number }>();
+    
+    // Initialize hourly buckets
+    for (let i = 0; i < 24 * 7; i++) {
       const timestamp = subDays(addHours(now, -i), 0);
-      const hour = timestamp.getHours();
+      const key = timestamp.toISOString();
+      hourlyBuckets.set(key, { production: 0, consumption: 0, count: 0 });
+    }
+    
+    // Aggregate transactions into hourly buckets
+    transactions.forEach((txn: any) => {
+      const txnDate = new Date(txn.timestamp);
+      const hourKey = new Date(
+        txnDate.getFullYear(),
+        txnDate.getMonth(),
+        txnDate.getDate(),
+        txnDate.getHours()
+      ).toISOString();
       
-      // Solar production pattern (peak at noon)
-      const solarMultiplier = Math.max(0, Math.sin((hour - 6) * Math.PI / 12));
-      const production = solarMultiplier * (8 + Math.random() * 4); // 0-12 kWh
+      const bucket = hourlyBuckets.get(hourKey);
+      if (bucket) {
+        // If user is seller, this is production (energy they generated and sold)
+        if (txn.sellerId === uid) {
+          bucket.production += txn.energyAmount;
+        }
+        // If user is buyer, this is consumption (energy they purchased and used)
+        if (txn.buyerId === uid) {
+          bucket.consumption += txn.energyAmount;
+        }
+        bucket.count++;
+      }
+    });
+    
+    // Convert buckets to EnergyData array
+    const sortedKeys = Array.from(hourlyBuckets.keys()).sort();
+    sortedKeys.forEach(key => {
+      const bucket = hourlyBuckets.get(key)!;
+      const timestamp = new Date(key);
       
-      // Consumption pattern (higher in morning and evening)
-      const baseConsumption = 2 + Math.sin((hour - 8) * Math.PI / 8) * 3;
-      const consumption = Math.max(1, baseConsumption + Math.random() * 2);
+      // Calculate grid import/export
+      const netEnergy = bucket.production - bucket.consumption;
+      const gridImport = netEnergy < 0 ? Math.abs(netEnergy) : 0;
+      const gridExport = netEnergy > 0 ? netEnergy : 0;
       
-      const gridImport = Math.max(0, consumption - production);
-      const gridExport = Math.max(0, production - consumption);
+      // Estimate battery level based on net energy
+      const batteryLevel = 50 + (netEnergy * 5); // Simplified battery simulation
       
       data.push({
         userId: uid,
         timestamp,
-        production: Math.round(production * 100) / 100,
-        consumption: Math.round(consumption * 100) / 100,
+        production: Math.round(bucket.production * 100) / 100,
+        consumption: Math.round(bucket.consumption * 100) / 100,
         gridImport: Math.round(gridImport * 100) / 100,
         gridExport: Math.round(gridExport * 100) / 100,
-        batteryLevel: 50 + Math.random() * 40,
+        batteryLevel: Math.max(0, Math.min(100, batteryLevel)),
       });
-    }
+    });
     
-    return data.reverse();
+    return data;
   };
 
-  // Generate mock price data
-  const generatePriceData = (): PriceData[] => {
+  // Derive price data from actual marketplace listings and transactions
+  const derivePriceDataFromMarketplace = (listings: any[], transactions: any[]): PriceData[] => {
     const data: PriceData[] = [];
     const now = new Date();
+    const GRID_PRICE = 0.22; // Standard grid price per kWh
     
-    for (let i = 0; i < 30; i++) { // 30 days of daily data
-      const timestamp = subDays(now, i);
-      const p2pPrice = 0.12 + Math.random() * 0.08; // $0.12-0.20 per kWh
-      const gridPrice = 0.18 + Math.random() * 0.06; // $0.18-0.24 per kWh
-      const savings = ((gridPrice - p2pPrice) / gridPrice) * 100;
+    // Create daily buckets for the last 30 days
+    const dailyBuckets = new Map<string, { prices: number[]; transactionPrices: number[] }>();
+    
+    // Initialize daily buckets
+    for (let i = 0; i < 30; i++) {
+      const date = startOfDay(subDays(now, i));
+      const key = date.toISOString().split('T')[0];
+      dailyBuckets.set(key, { prices: [], transactionPrices: [] });
+    }
+    
+    // Aggregate listing prices
+    listings.forEach((listing: any) => {
+      const listingDate = new Date(listing.createdAt);
+      const dateKey = startOfDay(listingDate).toISOString().split('T')[0];
+      const bucket = dailyBuckets.get(dateKey);
+      if (bucket && listing.pricePerKwh) {
+        bucket.prices.push(listing.pricePerKwh);
+      }
+    });
+    
+    // Aggregate transaction prices
+    transactions.forEach((txn: any) => {
+      const txnDate = new Date(txn.timestamp);
+      const dateKey = startOfDay(txnDate).toISOString().split('T')[0];
+      const bucket = dailyBuckets.get(dateKey);
+      if (bucket && txn.pricePerKwh) {
+        bucket.transactionPrices.push(txn.pricePerKwh);
+      }
+    });
+    
+    // Convert buckets to PriceData array
+    const sortedKeys = Array.from(dailyBuckets.keys()).sort();
+    sortedKeys.forEach(key => {
+      const bucket = dailyBuckets.get(key)!;
+      const timestamp = new Date(key);
+      
+      // Calculate average P2P price (prefer transaction prices, fallback to listing prices)
+      let avgP2PPrice = GRID_PRICE * 0.75; // Default to 25% savings
+      
+      if (bucket.transactionPrices.length > 0) {
+        avgP2PPrice = bucket.transactionPrices.reduce((a, b) => a + b, 0) / bucket.transactionPrices.length;
+      } else if (bucket.prices.length > 0) {
+        avgP2PPrice = bucket.prices.reduce((a, b) => a + b, 0) / bucket.prices.length;
+      }
+      
+      const savings = ((GRID_PRICE - avgP2PPrice) / GRID_PRICE) * 100;
       
       data.push({
         timestamp,
-        p2pPrice: Math.round(p2pPrice * 1000) / 1000,
-        gridPrice: Math.round(gridPrice * 1000) / 1000,
-        savings: Math.round(savings * 10) / 10,
+        p2pPrice: Math.round(avgP2PPrice * 1000) / 1000,
+        gridPrice: GRID_PRICE,
+        savings: Math.round(Math.max(0, savings) * 10) / 10,
       });
-    }
+    });
     
-    return data.reverse();
+    return data;
   };
 
   return { energyData, priceData, loading };
