@@ -54,7 +54,14 @@ export default function LiquidEther({
   const resizeRafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    if (!mountRef.current) {
+      console.warn('LiquidEther: mountRef.current is null');
+      return;
+    }
+
+    console.log('LiquidEther: Initializing with colors:', colors);
+
+    try {
 
     function makePaletteTexture(stops: string[]) {
       let arr;
@@ -1093,6 +1100,12 @@ export default function LiquidEther({
     container.style.position = container.style.position || 'relative';
     container.style.overflow = container.style.overflow || 'hidden';
 
+    console.log('LiquidEther: Container dimensions:', {
+      width: container.clientWidth,
+      height: container.clientHeight,
+      rect: container.getBoundingClientRect()
+    });
+
     const webgl = new WebGLManager({
       $wrapper: container,
       autoDemo,
@@ -1179,6 +1192,9 @@ export default function LiquidEther({
       }
       webglRef.current = null;
     };
+    } catch (error) {
+      console.error('LiquidEther initialization error:', error);
+    }
   }, [
     BFECC,
     cursorSize,

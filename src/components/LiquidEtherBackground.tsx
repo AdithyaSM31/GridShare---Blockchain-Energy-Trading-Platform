@@ -10,6 +10,8 @@ export const LiquidEtherBackground: React.FC = () => {
     ? ['#10b981', '#22c55e', '#4ade80'] // emerald and green shades for dark mode
     : ['#10b981', '#22c55e', '#3b82f6']; // emerald, green, and blue for light mode
 
+  console.log('LiquidEtherBackground rendering with colors:', colors);
+
   return (
     <div 
       className="fixed inset-0 w-full h-full pointer-events-none" 
