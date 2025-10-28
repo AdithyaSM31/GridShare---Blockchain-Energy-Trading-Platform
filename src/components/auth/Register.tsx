@@ -127,6 +127,7 @@ export const Register: React.FC = () => {
           blur={16}
           brightness={65}
           opacity={0.9}
+          style={{ maxWidth: '480px' }}
         >
           <motion.form
             initial={{ opacity: 0 }}

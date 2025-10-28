@@ -27,6 +27,7 @@
   border-radius: inherit;
   position: relative;
   z-index: 1;
+  pointer-events: auto;
 }
 
 .glass-surface--svg {
