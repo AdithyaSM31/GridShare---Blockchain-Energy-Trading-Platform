@@ -3,7 +3,6 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { DarkModeToggle } from './DarkModeToggle';
 import { LiquidEtherBackground } from './LiquidEtherBackground';
-import GlassSurface from './GlassSurface';
 import { 
   Zap, 
   Home, 
@@ -36,19 +35,9 @@ export const Layout: React.FC = () => {
       <LiquidEtherBackground />
       
       {/* Header */}
-      <header className="sticky top-0 z-50 transition-colors duration-200 relative">
-        <GlassSurface
-          width="100%"
-          height="64px"
-          borderRadius={0}
-          backgroundOpacity={0.15}
-          blur={15}
-          brightness={60}
-          opacity={0.95}
-          className="border-b border-green-100/30 dark:border-gray-700/30"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="flex justify-between items-center h-16">
+      <header className="sticky top-0 z-50 transition-colors duration-200 relative liquid-glass border-b border-green-100/30 dark:border-gray-700/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/dashboard" className="flex items-center space-x-2">
                 <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
@@ -111,8 +100,8 @@ export const Layout: React.FC = () => {
               </button>
             </div>
           </div>
-          </div>
-        </GlassSurface>
+        </div>
+      </header>
 
         {/* Mobile Navigation */}
         <AnimatePresence>

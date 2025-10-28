@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { LiquidEtherBackground } from '../LiquidEtherBackground';
-import GlassSurface from '../GlassSurface';
 import { Zap, Eye, EyeOff, LogIn, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -61,22 +60,12 @@ export const Login: React.FC = () => {
         className="max-w-md w-full space-y-8 relative z-10"
       >
         {/* Login Form */}
-        <GlassSurface
-          width="100%"
-          height="auto"
-          borderRadius={24}
-          backgroundOpacity={0.2}
-          blur={16}
-          brightness={65}
-          opacity={0.9}
-          style={{ maxWidth: '480px', minHeight: '500px' }}
-        >
-          <motion.form
+        <div className="liquid-glass-form rounded-3xl p-8 max-w-[480px] w-full">
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="w-full p-8 space-y-6"
-            onSubmit={handleSubmit}
+            className="w-full space-y-6"
           >
           {/* Header */}
           <div className="text-center mb-6">
@@ -96,6 +85,8 @@ export const Login: React.FC = () => {
               <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
             </div>
           )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -159,8 +150,9 @@ export const Login: React.FC = () => {
               </Link>
             </p>
           </div>
-        </motion.form>
-        </GlassSurface>
+          </form>
+          </motion.div>
+        </div>
       </motion.div>
     </div>
   );

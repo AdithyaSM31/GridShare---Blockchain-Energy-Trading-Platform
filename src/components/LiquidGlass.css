@@ -1,0 +1,153 @@
+/* Lightweight Liquid Glass Effect - High Performance */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.liquid-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 12px 40px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px) saturate(180%) brightness(90%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%) brightness(90%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .liquid-glass:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      0 12px 40px 0 rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Dark mode with class (for dark mode toggle) */
+.dark .liquid-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px) saturate(180%) brightness(90%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%) brightness(90%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark .liquid-glass:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 12px 40px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Form variant - slightly more opaque */
+.liquid-glass-form {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 10px 40px 0 rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  .liquid-glass-form {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px) saturate(180%) brightness(90%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(90%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+}
+
+.dark .liquid-glass-form {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px) saturate(180%) brightness(90%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%) brightness(90%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Card variant - for dashboard cards */
+.liquid-glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px) saturate(160%);
+  -webkit-backdrop-filter: blur(8px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 6px 24px 0 rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+}
+
+.liquid-glass-card:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+  .liquid-glass-card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px) saturate(160%) brightness(90%);
+    -webkit-backdrop-filter: blur(8px) saturate(160%) brightness(90%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .liquid-glass-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.dark .liquid-glass-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px) saturate(160%) brightness(90%);
+  -webkit-backdrop-filter: blur(8px) saturate(160%) brightness(90%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark .liquid-glass-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+  .liquid-glass,
+  .liquid-glass-form,
+  .liquid-glass-card {
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .liquid-glass,
+    .liquid-glass-form,
+    .liquid-glass-card {
+      background: rgba(30, 30, 30, 0.85);
+    }
+  }
+
+  .dark .liquid-glass,
+  .dark .liquid-glass-form,
+  .dark .liquid-glass-card {
+    background: rgba(30, 30, 30, 0.85);
+  }
+}

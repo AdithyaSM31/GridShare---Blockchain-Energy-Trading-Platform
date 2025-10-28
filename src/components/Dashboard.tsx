@@ -2,7 +2,6 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useEnergyData } from '../hooks/useEnergyData';
 import { useEnergyTrading } from '../hooks/useEnergyTrading';
-import GlassSurface from './GlassSurface';
 import { 
   Zap, 
   TrendingUp, 
@@ -183,43 +182,34 @@ export const Dashboard: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
+            className="liquid-glass-card rounded-xl"
           >
-            <GlassSurface
-              width="100%"
-              height="150px"
-              borderRadius={16}
-              backgroundOpacity={0.15}
-              blur={12}
-              brightness={70}
-              opacity={0.92}
-            >
-              <div className="w-full h-full p-6 flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{stat.name}</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{stat.value}</p>
-                  </div>
-                  <div className={`p-3 rounded-lg ${stat.bgColor} dark:bg-opacity-20`}>
-                    <stat.icon className={`w-6 h-6 ${stat.color} dark:brightness-125`} />
-                  </div>
+            <div className="w-full h-[150px] p-6 flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{stat.name}</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">{stat.value}</p>
                 </div>
-                <div className="mt-4 flex items-center">
-                  {stat.changeType === 'positive' ? (
-                    <ArrowUpRight className="w-4 h-4 text-green-500 dark:text-green-400" />
-                  ) : (
-                    <ArrowDownRight className="w-4 h-4 text-red-500 dark:text-red-400" />
-                  )}
-                  <span className={`ml-2 text-sm font-medium ${
-                    stat.changeType === 'positive'
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-red-600 dark:text-red-400'
-                  }`}>
-                    {stat.change}
-                  </span>
-                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">vs last month</span>
+                <div className={`p-3 rounded-lg ${stat.bgColor} dark:bg-opacity-20`}>
+                  <stat.icon className={`w-6 h-6 ${stat.color} dark:brightness-125`} />
                 </div>
               </div>
-            </GlassSurface>
+              <div className="mt-4 flex items-center">
+                {stat.changeType === 'positive' ? (
+                  <ArrowUpRight className="w-4 h-4 text-green-500 dark:text-green-400" />
+                ) : (
+                  <ArrowDownRight className="w-4 h-4 text-red-500 dark:text-red-400" />
+                )}
+                <span className={`ml-2 text-sm font-medium ${
+                  stat.changeType === 'positive'
+                    ? 'text-green-600 dark:text-green-400'
+                    : 'text-red-600 dark:text-red-400'
+                }`}>
+                  {stat.change}
+                </span>
+                <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">vs last month</span>
+              </div>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -231,48 +221,39 @@ export const Dashboard: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
+          className="liquid-glass rounded-xl"
         >
-          <GlassSurface
-            width="100%"
-            height="400px"
-            borderRadius={16}
-            backgroundOpacity={0.15}
-            blur={12}
-            brightness={70}
-            opacity={0.92}
-          >
-            <div className="w-full h-full p-6 flex flex-col">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <Zap className="w-5 h-5 text-blue-500 dark:text-blue-400 mr-2" />
-                Energy Flow (24h)
-              </h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={last24Hours}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" className="dark:stroke-gray-700" />
-                  <XAxis dataKey="time" stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
-                  <YAxis stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
-                  <Area
-                    type="monotone"
-                    dataKey="production"
-                    stackId="1"
-                    stroke="#10b981"
-                    fill="#10b981"
-                    fillOpacity={0.6}
-                    name="Production"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="consumption"
-                    stackId="2"
-                    stroke="#3b82f6"
-                    fill="#3b82f6"
-                    fillOpacity={0.6}
-                    name="Consumption"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </GlassSurface>
+          <div className="w-full h-[400px] p-6 flex flex-col">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+              <Zap className="w-5 h-5 text-blue-500 dark:text-blue-400 mr-2" />
+              Energy Flow (24h)
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={last24Hours}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" className="dark:stroke-gray-700" />
+                <XAxis dataKey="time" stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
+                <YAxis stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
+                <Area
+                  type="monotone"
+                  dataKey="production"
+                  stackId="1"
+                  stroke="#10b981"
+                  fill="#10b981"
+                  fillOpacity={0.6}
+                  name="Production"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="consumption"
+                  stackId="2"
+                  stroke="#3b82f6"
+                  fill="#3b82f6"
+                  fillOpacity={0.6}
+                  name="Consumption"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </motion.div>
 
         {/* Price Comparison Chart */}
@@ -280,46 +261,37 @@ export const Dashboard: React.FC = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
+          className="liquid-glass rounded-xl"
         >
-          <GlassSurface
-            width="100%"
-            height="400px"
-            borderRadius={16}
-            backgroundOpacity={0.15}
-            blur={12}
-            brightness={70}
-            opacity={0.92}
-          >
-            <div className="w-full h-full p-6 flex flex-col">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                <DollarSign className="w-5 h-5 text-green-500 dark:text-green-400 mr-2" />
-                Price Comparison (7d)
-              </h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={priceComparisonData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" className="dark:stroke-gray-700" />
-                  <XAxis dataKey="date" stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
-                  <YAxis stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
-                  <Line
-                    type="monotone"
-                    dataKey="p2p"
-                    stroke="#10b981"
-                    strokeWidth={2}
-                    dot={{ fill: '#10b981', strokeWidth: 2 }}
-                    name="P2P Price"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="grid"
-                    stroke="#ef4444"
-                    strokeWidth={2}
-                    dot={{ fill: '#ef4444', strokeWidth: 2 }}
-                    name="Grid Price"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </GlassSurface>
+          <div className="w-full h-[400px] p-6 flex flex-col">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+              <DollarSign className="w-5 h-5 text-green-500 dark:text-green-400 mr-2" />
+              Price Comparison (7d)
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={priceComparisonData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" className="dark:stroke-gray-700" />
+                <XAxis dataKey="date" stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
+                <YAxis stroke="#666" className="dark:stroke-gray-400" fontSize={12} />
+                <Line
+                  type="monotone"
+                  dataKey="p2p"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  dot={{ fill: '#10b981', strokeWidth: 2 }}
+                  name="P2P Price"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="grid"
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  dot={{ fill: '#ef4444', strokeWidth: 2 }}
+                  name="Grid Price"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </motion.div>
       </div>
 
@@ -328,22 +300,13 @@ export const Dashboard: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
+        className="liquid-glass rounded-xl"
       >
-        <GlassSurface
-          width="100%"
-          height="auto"
-          borderRadius={16}
-          backgroundOpacity={0.15}
-          blur={12}
-          brightness={70}
-          opacity={0.92}
-          style={{ minHeight: '400px' }}
-        >
-          <div className="w-full h-full flex flex-col">
-            <div className="px-6 py-4 border-b border-gray-100/50 dark:border-gray-700/50">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
-            </div>
-            <div className="p-6">
+        <div className="w-full min-h-[400px] flex flex-col">
+          <div className="px-6 py-4 border-b border-gray-100/50 dark:border-gray-700/50">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
+          </div>
+          <div className="p-6">
           {transactions.slice(0, 5).length > 0 ? (
             <div className="space-y-4">
               {transactions.slice(0, 5).map((transaction) => (
@@ -395,9 +358,8 @@ export const Dashboard: React.FC = () => {
               <p className="text-sm text-gray-400 dark:text-gray-500">Start trading energy to see your activity here</p>
             </div>
           )}
-            </div>
           </div>
-        </GlassSurface>
+        </div>
       </motion.div>
     </div>
   );

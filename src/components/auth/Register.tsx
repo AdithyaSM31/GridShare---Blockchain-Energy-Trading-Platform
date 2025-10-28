@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { LiquidEtherBackground } from '../LiquidEtherBackground';
-import GlassSurface from '../GlassSurface';
 import { Zap, Eye, EyeOff, UserPlus, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -120,23 +119,14 @@ export const Register: React.FC = () => {
         </div>
 
         {/* Registration Form */}
-        <GlassSurface
-          width="100%"
-          height="auto"
-          borderRadius={24}
-          backgroundOpacity={0.2}
-          blur={16}
-          brightness={65}
-          opacity={0.9}
-          style={{ maxWidth: '480px', minHeight: '600px' }}
-        >
-          <motion.form
+        <div className="liquid-glass-form rounded-3xl p-8 max-w-[480px] w-full">
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="w-full p-8 space-y-6"
-            onSubmit={handleSubmit}
+            className="w-full space-y-6"
           >
+          <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
               <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
@@ -321,8 +311,9 @@ export const Register: React.FC = () => {
               </Link>
             </p>
           </div>
-        </motion.form>
-        </GlassSurface>
+          </form>
+          </motion.div>
+        </div>
       </motion.div>
     </div>
   );
