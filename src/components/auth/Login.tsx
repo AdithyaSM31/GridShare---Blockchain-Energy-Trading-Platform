@@ -60,19 +60,6 @@ export const Login: React.FC = () => {
         transition={{ duration: 0.6 }}
         className="max-w-md w-full space-y-8 relative z-10"
       >
-        {/* Header */}
-        <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mb-4">
-            <Zap className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-            Welcome to GridShare
-          </h2>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Sign in to your energy trading account
-          </p>
-        </div>
-
         {/* Login Form */}
         <GlassSurface
           width="100%"
@@ -90,6 +77,19 @@ export const Login: React.FC = () => {
             className="w-full p-8 space-y-6"
             onSubmit={handleSubmit}
           >
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mb-4">
+              <Zap className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              Welcome to GridShare
+            </h2>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
+              Sign in to your energy trading account
+            </p>
+          </div>
+
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
               <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
