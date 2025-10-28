@@ -30,7 +30,7 @@ export const Layout: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200 relative">
+    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200 relative" style={{ isolation: 'isolate' }}>
       {/* Liquid Ether Background */}
       <LiquidEtherBackground />
       
@@ -134,7 +134,7 @@ export const Layout: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <Outlet />
       </main>
     </div>

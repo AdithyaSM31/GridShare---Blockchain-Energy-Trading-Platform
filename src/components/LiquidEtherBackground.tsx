@@ -11,7 +11,10 @@ export const LiquidEtherBackground: React.FC = () => {
     : ['#10b981', '#22c55e', '#3b82f6']; // emerald, green, and blue for light mode
 
   return (
-    <div className="fixed inset-0 w-full h-full -z-10 pointer-events-none">
+    <div 
+      className="fixed inset-0 w-full h-full pointer-events-none" 
+      style={{ zIndex: 0 }}
+    >
       <LiquidEther
         colors={colors}
         mouseForce={20}
