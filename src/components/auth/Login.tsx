@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDarkMode } from '../../contexts/DarkModeContext';
+import { LiquidEtherBackground } from '../LiquidEtherBackground';
 import { Zap, Eye, EyeOff, LogIn, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -35,11 +36,14 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200 relative">
+      {/* Liquid Ether Background */}
+      <LiquidEtherBackground />
+      
       {/* Dark Mode Toggle - Top Right */}
       <button
         onClick={toggleDarkMode}
-        className="fixed top-4 right-4 p-3 rounded-lg bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-200"
+        className="fixed top-4 right-4 p-3 rounded-lg bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-200 z-50"
         aria-label="Toggle dark mode"
       >
         {isDarkMode ? (
