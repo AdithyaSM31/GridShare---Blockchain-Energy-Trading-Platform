@@ -122,12 +122,13 @@ export const Register: React.FC = () => {
         {/* Registration Form */}
         <GlassSurface
           width="100%"
+          height="auto"
           borderRadius={24}
           backgroundOpacity={0.2}
           blur={16}
           brightness={65}
           opacity={0.9}
-          style={{ maxWidth: '480px' }}
+          style={{ maxWidth: '480px', minHeight: '600px' }}
         >
           <motion.form
             initial={{ opacity: 0 }}

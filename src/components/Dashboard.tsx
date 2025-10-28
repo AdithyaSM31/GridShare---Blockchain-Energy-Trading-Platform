@@ -186,13 +186,14 @@ export const Dashboard: React.FC = () => {
           >
             <GlassSurface
               width="100%"
+              height="150px"
               borderRadius={16}
               backgroundOpacity={0.15}
               blur={12}
               brightness={70}
               opacity={0.92}
             >
-              <div className="w-full p-6">
+              <div className="w-full h-full p-6 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{stat.name}</p>
@@ -233,13 +234,14 @@ export const Dashboard: React.FC = () => {
         >
           <GlassSurface
             width="100%"
+            height="400px"
             borderRadius={16}
             backgroundOpacity={0.15}
             blur={12}
             brightness={70}
             opacity={0.92}
           >
-            <div className="w-full p-6">
+            <div className="w-full h-full p-6 flex flex-col">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                 <Zap className="w-5 h-5 text-blue-500 dark:text-blue-400 mr-2" />
                 Energy Flow (24h)
@@ -281,13 +283,14 @@ export const Dashboard: React.FC = () => {
         >
           <GlassSurface
             width="100%"
+            height="400px"
             borderRadius={16}
             backgroundOpacity={0.15}
             blur={12}
             brightness={70}
             opacity={0.92}
           >
-            <div className="w-full p-6">
+            <div className="w-full h-full p-6 flex flex-col">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                 <DollarSign className="w-5 h-5 text-green-500 dark:text-green-400 mr-2" />
                 Price Comparison (7d)
@@ -328,13 +331,15 @@ export const Dashboard: React.FC = () => {
       >
         <GlassSurface
           width="100%"
+          height="auto"
           borderRadius={16}
           backgroundOpacity={0.15}
           blur={12}
           brightness={70}
           opacity={0.92}
+          style={{ minHeight: '400px' }}
         >
-          <div className="w-full">
+          <div className="w-full h-full flex flex-col">
             <div className="px-6 py-4 border-b border-gray-100/50 dark:border-gray-700/50">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
             </div>
