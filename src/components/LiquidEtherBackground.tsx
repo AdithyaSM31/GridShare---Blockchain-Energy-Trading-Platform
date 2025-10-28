@@ -14,8 +14,8 @@ export const LiquidEtherBackground: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 w-full h-full pointer-events-none" 
-      style={{ zIndex: 0 }}
+      className="fixed inset-0 w-full h-full" 
+      style={{ zIndex: 0, pointerEvents: 'auto' }}
     >
       <LiquidEther
         colors={colors}
