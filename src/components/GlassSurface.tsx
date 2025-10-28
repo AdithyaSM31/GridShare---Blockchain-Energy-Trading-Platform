@@ -32,7 +32,7 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
   borderWidth = 0.07,
   brightness = 50,
   opacity = 0.93,
-  blur = 11,
+  blur = 8,
   displace = 0,
   backgroundOpacity = 0,
   saturation = 1,
@@ -57,6 +57,9 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
   const greenChannelRef = useRef<SVGFEDisplacementMapElement>(null);
   const blueChannelRef = useRef<SVGFEDisplacementMapElement>(null);
   const gaussianBlurRef = useRef<SVGFEGaussianBlurElement>(null);
+  
+  // Use simpler CSS-only approach for better performance
+  const useSimpleGlass = true;
 
   const generateDisplacementMap = () => {
     const rect = containerRef.current?.getBoundingClientRect();

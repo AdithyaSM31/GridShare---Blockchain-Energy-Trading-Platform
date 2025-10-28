@@ -31,7 +31,7 @@ export const Layout: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200 relative" style={{ isolation: 'isolate' }}>
+    <div className="min-h-screen bg-white dark:bg-black transition-colors duration-200 relative" style={{ isolation: 'isolate' }}>
       {/* Liquid Ether Background */}
       <LiquidEtherBackground />
       
@@ -121,7 +121,7 @@ export const Layout: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white dark:bg-gray-900 border-t border-green-100 dark:border-gray-700 transition-colors duration-200"
+              className="md:hidden bg-white dark:bg-black border-t border-green-100 dark:border-gray-700 transition-colors duration-200"
             >
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 {navigation.map((item) => (

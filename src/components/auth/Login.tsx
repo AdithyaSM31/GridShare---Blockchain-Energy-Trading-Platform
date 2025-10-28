@@ -37,7 +37,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200 relative" style={{ isolation: 'isolate' }}>
+    <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200 relative" style={{ isolation: 'isolate' }}>
       {/* Liquid Ether Background */}
       <LiquidEtherBackground />
       

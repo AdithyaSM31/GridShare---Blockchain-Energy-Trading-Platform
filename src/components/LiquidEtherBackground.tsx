@@ -5,12 +5,10 @@ import { useDarkMode } from '../contexts/DarkModeContext';
 export const LiquidEtherBackground: React.FC = () => {
   const { isDarkMode } = useDarkMode();
 
-  // Color palette based on theme
+  // Color palette based on theme - reduced intensity for performance
   const colors = isDarkMode 
     ? ['#10b981', '#22c55e', '#4ade80'] // emerald and green shades for dark mode
     : ['#10b981', '#22c55e', '#3b82f6']; // emerald, green, and blue for light mode
-
-  console.log('LiquidEtherBackground rendering with colors:', colors);
 
   return (
     <div 
@@ -19,17 +17,17 @@ export const LiquidEtherBackground: React.FC = () => {
     >
       <LiquidEther
         colors={colors}
-        mouseForce={20}
-        cursorSize={100}
+        mouseForce={15}
+        cursorSize={80}
         isViscous={false}
-        viscous={30}
-        iterationsViscous={32}
-        iterationsPoisson={32}
-        resolution={0.5}
+        viscous={20}
+        iterationsViscous={16}
+        iterationsPoisson={16}
+        resolution={0.35}
         isBounce={false}
         autoDemo={true}
-        autoSpeed={0.5}
-        autoIntensity={2.2}
+        autoSpeed={0.3}
+        autoIntensity={1.5}
         takeoverDuration={0.25}
         autoResumeDelay={3000}
         autoRampDuration={0.6}
