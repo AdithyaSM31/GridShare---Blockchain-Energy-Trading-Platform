@@ -101,7 +101,6 @@ export const Layout: React.FC = () => {
             </div>
           </div>
         </div>
-      </header>
 
         {/* Mobile Navigation */}
         <AnimatePresence>
