@@ -1044,7 +1044,9 @@ export default function LiquidEther({
       }
 
       init() {
+        console.log('LiquidEther: Appending canvas to wrapper', this.props.$wrapper);
         this.props.$wrapper.prepend(Common.renderer!.domElement);
+        console.log('LiquidEther: Canvas appended, domElement:', Common.renderer!.domElement);
         this.output = new Output();
       }
 

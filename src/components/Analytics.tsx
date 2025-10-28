@@ -256,7 +256,7 @@ export const Analytics: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+            className="liquid-glass-card rounded-xl p-6"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -286,7 +286,7 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+          className="liquid-glass rounded-xl p-6"
         >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Daily Energy Flow
@@ -309,7 +309,7 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+          className="liquid-glass rounded-xl p-6"
         >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Monthly Financial Overview
@@ -348,7 +348,7 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+          className="lg:col-span-1 liquid-glass rounded-xl p-6"
         >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Energy Source Distribution
@@ -383,7 +383,7 @@ export const Analytics: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6"
+          className="lg:col-span-2 liquid-glass rounded-xl p-6"
         >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Trading Summary

@@ -98,7 +98,7 @@ export const Profile: React.FC = () => {
           transition={{ delay: 0.1 }}
           className="lg:col-span-1"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <div className="liquid-glass-card rounded-xl p-6">
             <div className="text-center">
               <div className="w-24 h-24 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white text-2xl font-bold">
@@ -121,7 +121,7 @@ export const Profile: React.FC = () => {
           </div>
 
           {/* Quick Stats */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mt-6">
+          <div className="liquid-glass-card rounded-xl p-6 mt-6">
             <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Account Stats</h4>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
@@ -155,7 +155,7 @@ export const Profile: React.FC = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Personal Information */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div className="liquid-glass rounded-xl p-6">
               <div className="flex items-center mb-6">
                 <User className="w-5 h-5 text-blue-500 mr-2" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Personal Information</h3>
@@ -207,7 +207,7 @@ export const Profile: React.FC = () => {
             </div>
 
             {/* Energy Preferences */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div className="liquid-glass rounded-xl p-6">
               <div className="flex items-center mb-6">
                 <Settings className="w-5 h-5 text-green-500 mr-2" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Energy Preferences</h3>
@@ -281,7 +281,7 @@ export const Profile: React.FC = () => {
             </div>
 
             {/* Security Settings */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div className="liquid-glass rounded-xl p-6">
               <div className="flex items-center mb-6">
                 <Shield className="w-5 h-5 text-red-500 mr-2" />
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Security</h3>

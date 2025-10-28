@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDarkMode } from '../../contexts/DarkModeContext';
-import { LiquidEtherBackground } from '../LiquidEtherBackground';
+import { LiquidEtherBackground } from '../LiquidEtherBackground.tsx';
 import { Zap, Eye, EyeOff, LogIn, Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 

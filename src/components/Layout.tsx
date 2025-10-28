@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { DarkModeToggle } from './DarkModeToggle';
-import { LiquidEtherBackground } from './LiquidEtherBackground';
+import { LiquidEtherBackground } from './LiquidEtherBackground.tsx';
 import { 
   Zap, 
   Home, 
